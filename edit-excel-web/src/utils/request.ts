@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { httpBaseUrl } from '@/config.custom'
+import { httpBaseUrl } from '@/config_custom'
 
 // 创建一个 axios 实例
 const service = axios.create({

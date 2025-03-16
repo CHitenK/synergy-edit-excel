@@ -15,7 +15,7 @@ import { commitExcelConfig, commitExcelCelldata, getEacelBaseInfo } from '@/api/
 import { exportExcel } from '@/utils/export'
 import { debounce, randomNum } from '@/utils/index'
 import { getSheetConfig } from './useConfig'
-import { socketBaseUrl } from '@/config.custom'
+import { socketBaseUrl } from '@/config_custom'
  
 const props = defineProps({
   /* 文件code */
