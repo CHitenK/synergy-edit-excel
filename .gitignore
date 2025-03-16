@@ -21,4 +21,4 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-/edit-excel-sever/config.js
+/edit-excel-sever/config.db.js

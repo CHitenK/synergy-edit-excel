@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { createExcelConfigSchema, createExcelDataSchema, createUserSchema } = require("./dbSchemas.js");
-const { mongodbUrl } = require('../config.js')
+const { mongodbUrl } = require('../config.db.js')
 
 class DBHelper {
   /* 数据库 */
