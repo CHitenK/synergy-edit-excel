@@ -1,0 +1,85 @@
+@import './base.css';
+
+/* 水平间隔 */
+.gutter-h-small {
+  margin-right: 10px;
+}
+.gutter-h {
+  margin-right: 20px;
+}
+.gutter-h-large {
+  margin-right: 30px;
+}
+/* 垂直间隔 */
+.gutter-v-small {
+  margin-bottom: 10px;
+}
+.gutter-v {
+  margin-bottom: 20px;
+}
+.gutter-v-large {
+  margin-bottom: 30px;
+}
+.gutter-padding {
+  padding: 20px;
+}
+/* flex常用样式 */
+.layout-h {
+  display: flex;
+  flex-direction: row;
+}
+/* // 子元素垂直布局 */
+.layout-v {
+  display: flex;
+  flex-direction: column;
+}
+.layout-h-min {
+  min-width: 100%;
+}
+.layout-v-min {
+  min-height: 100%;
+}
+
+/* // 子元素水平居中布局 */
+.layout-h-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+/* // 子元素垂直居中布局 */
+.layout-v-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.layout-fill {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.layout-full {
+  width: 100%;
+  height: 100%;
+}
+/* 与flex配合 */
+/* 子元素居中 */
+.layout-center {
+  justify-content: center;
+  align-items: center;
+}
+.layout-space-between {
+  justify-content: space-between;
+  align-items: center;
+}
+/* 鼠标样式 */
+.cursor {
+  cursor: pointer;
+}
+
+.text-ellipsis {
+  display: -webkit-box;
+  overflow: hidden; /*超出隐藏*/
+  text-overflow: ellipsis; /*隐藏后添加省略号*/
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+}

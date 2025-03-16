@@ -1,0 +1,24 @@
+{
+  "name": "synergy-edit-excel-sever",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "koa": "^2.16.0",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^13.0.1",
+    "mongoose": "^8.8.2",
+    "pako": "^2.1.0",
+    "sharedb": "^5.2.1",
+    "sharedb-mongo": "^5.0.0",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0",
+    "ws": "^8.18.1"
+  }
+}
