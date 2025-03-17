@@ -11,10 +11,10 @@ export default defineConfig({
     }
   },
   build: {
-    assetsDir: './',
+    assetsDir: './libs/',
     chunkSizeWarningLimit: 1000,
     reportCompressedSize: false,
-    copyPublicDir: false,
+    copyPublicDir: true,
     sourcemap: false,
     minify: 'terser',
     cssMinify: false,
@@ -22,7 +22,7 @@ export default defineConfig({
     terserOptions: {
       compress: {
         // warnings: false, 
-        drop_console: true, // 打包时删除console 
+        // drop_console: true, // 打包时删除console 
         drop_debugger: true, // 打包时删除 debugger
         pure_funcs: ['console.log']
       },
@@ -40,7 +40,8 @@ export default defineConfig({
     cors: true, // 允许跨域
     proxy: {
       '/api': {
-        target: 'http://localhost:3011',
+         target: 'http://localhost:3011',
+       // target: 'http://excelxt.sixk.top',
         changeOrigin: true
       },
     }

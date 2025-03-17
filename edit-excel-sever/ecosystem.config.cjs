@@ -10,7 +10,7 @@ module.exports = {
       port: '3011',
       exec_mode: 'cluster',
       instances: 1,
-      script: './index.mjs'
+      script: './index.js'
     }
   ]
 }

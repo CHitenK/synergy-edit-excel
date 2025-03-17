@@ -1,0 +1,23 @@
+.dialog-container[data-v-038b5138] {
+  padding: 44px 50px 32px 60px;
+}
+.dialog-container .buttons[data-v-038b5138] {
+  margin-top: 51px;
+}
+.dialog-container .code-warp[data-v-038b5138] {
+  width: 100px;
+  height: 30px;
+  font-size: 18px;
+  background-color: #efefef;
+  letter-spacing: 2px;
+}.home-head-warp[data-v-d0c2a035] {
+  height: 35px;
+  width: 100%;
+  background-color: #f1f1f1;
+  font-size: 12px;
+  color: #666;
+  padding: 0 20px;
+}
+.act[data-v-d0c2a035] {
+  color: var(--el-color-primary);
+}

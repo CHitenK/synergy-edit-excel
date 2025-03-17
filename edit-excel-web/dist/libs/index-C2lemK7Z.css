@@ -1,0 +1,33 @@
+
+#luckysheet[data-v-cd51cfb8] {
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+  width: 100%;
+  left: 0px;
+  top: 40px;
+  bottom: 0px;
+}
+#uploadBtn[data-v-cd51cfb8] {
+  font-size: 16px;
+}
+#tip[data-v-cd51cfb8] {
+  position: absolute;
+  z-index: 1;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  background: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-size: 40px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.dialog-container[data-v-72ef7ebf] {
+  padding: 44px 50px 32px 60px;
+}
+.dialog-container .buttons[data-v-72ef7ebf] {
+  margin-top: 51px;
+}

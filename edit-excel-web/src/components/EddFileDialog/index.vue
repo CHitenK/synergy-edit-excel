@@ -66,7 +66,7 @@ import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
 
 import { addExcel, uodateExcel } from '@/api/index'
-import { randomNum } from '@/utils/index'
+import { randomNum, copyText } from '@/utils/index'
 
 const props = defineProps({
   modelValue: {
@@ -102,17 +102,6 @@ const state = reactive({
   visible: true,
   oldFileType: null
 })
-
-/* 复制 */
-const copyText = async (text) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage.success('复制到粘贴板');
-  } catch (error) {
-    ElMessage.error('复制出错了');
-    console.log(error)
-  }
-}
 
 const init = () => {
   const { name, fileType, shareCode, openCodeExpireTime, openCode  } = props.fileInfo ?? {}

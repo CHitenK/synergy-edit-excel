@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@vue/tsconfig": "^0.7.0",
     "sass": "^1.78.0",
     "sass-loader": "^16.0.1",
+    "terser": "^5.39.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.1",
     "vue-tsc": "^2.2.8"

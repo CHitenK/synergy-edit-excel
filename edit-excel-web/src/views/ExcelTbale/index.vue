@@ -48,6 +48,7 @@ import User from '@/components/User/index.vue'
 import CodeDialog from '@/components/CodeDialog/index.vue'
 
 import { getEacelBaseInfo, checkOpenCode, isShareUser, addSharer } from '@/api/index'
+import { copyText } from '@/utils/index'
 
 const route = useRoute()
 
@@ -88,17 +89,6 @@ const logout = () => {
     sessionStorage.removeItem('userInfo')
     window.location.reload()
   })
-}
-
-/* 复制 */
-const copyText = async (text) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage.success('复制到粘贴板');
-  } catch (error) {
-    ElMessage.error('复制出错了');
-    console.log(error)
-  }
 }
 
 /* 分享链接 */

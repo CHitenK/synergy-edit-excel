@@ -73,6 +73,7 @@ import EddFileDialog from '@/components/EddFileDialog/index.vue'
 import User from '@/components/User/index.vue'
 
 import { getFileList, deleteExcel } from '@/api/index'
+import { copyText } from '@/utils/index'
 
 const route = useRoute()
 const luckySheetRef = ref(null)
@@ -165,28 +166,16 @@ const logout = () => {
   })
 }
 
-/* 复制 */
-const copyText = async (text, msg = null) => {
-  try {
-    const tips = msg ?? '复制到粘贴板'
-    await navigator.clipboard.writeText(text);
-    ElMessage.success(tips);
-  } catch (error) {
-    ElMessage.error('复制出错了');
-    console.log(error)
-  }
-}
-
 /* 分享链接 */
 const shareUrl = () => {
   const origin = window.location.origin
   const url = `${origin}/excelTbale?code=${currentFile.value.code}&fileType=${currentFile.value.fileType}`
-  copyText(url, '链接已经复制到粘贴板')
+  copyText(url, '链接已经复制到剪贴板')
 }
 /* 复制码 */
 const copyCode = () => {
   const tcode = currentFile.value.fileType === 2 ? currentFile.value.openCode : currentFile.value.shareCode
-  const message = `${currentFile.value.fileType === 2 ? '开放码' : '共享码'}已经复制到粘贴板`
+  const message = `${currentFile.value.fileType === 2 ? '开放码' : '共享码'}已经复制到剪贴板`
   copyText(tcode, message)
 }
 
