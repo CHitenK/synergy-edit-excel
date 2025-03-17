@@ -21,6 +21,3 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# 不公开的配置文件，自己建立
-/edit-excel-sever/config.db.js
-/edit-excel-web/config_custom.js
