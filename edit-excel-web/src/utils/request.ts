@@ -29,15 +29,18 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
+   
     // 对响应数据做点什么
     const { data = {} } = response
     if (data.code === 200) {
       return data
     }
+    console.log('response', response)
     ElMessage.error(data.errorMsg || '请求出错，稍后重试')
     return Promise.reject()
   },
   error => {
+    console.log('http error', error)
     ElMessage.error('请求出错，稍后重试')
     // 对响应错误做点什么
     return Promise.reject(error);

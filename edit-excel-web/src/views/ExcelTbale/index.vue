@@ -48,8 +48,9 @@ import User from '@/components/User/index.vue'
 import CodeDialog from '@/components/CodeDialog/index.vue'
 
 import { getEacelBaseInfo, checkOpenCode, isShareUser, addSharer } from '@/api/index'
-import { copyText } from '@/utils/index'
+import Helper from '@/utils/helper'
 
+const dataModel = new Helper()
 const route = useRoute()
 
 const luckySheetRef = ref(null)
@@ -57,7 +58,7 @@ const diffKey = ref('')
 
 const userVisible = ref(false)
 const userType = ref('login')
-const userInfo = ref({})
+const userInfo = dataModel.userInfo
 
 const showWatermark = ref(false)
 const codeVisible = ref(false)
@@ -84,18 +85,13 @@ const logout = () => {
     cancelButtonText: '取消',
     confirmButtonText: '退出',
   }).then(() => {
-    ElMessage.success('退出登录')
-    userInfo.value = {}
-    sessionStorage.removeItem('userInfo')
-    window.location.reload()
+    dataModel.handleLogout()
   })
 }
 
 /* 分享链接 */
 const shareUrl = () => {
-  const origin = window.location.origin
-  const url = `${origin}/?code=${currentFile.value.code}&fileType=${currentFile.value.fileType}`
-  copyText(url)
+  dataModel.shareUrl(currentFile.value.code, currentFile.value.fileType)
 }
 
 const goHome = () => {
@@ -238,10 +234,8 @@ const handleDownLoad = () => {
 const init = async () => {
   const { code } = route.query
   /* 获取用户信息 */
-  const userInfoStr = sessionStorage.getItem('userInfo')
-  if (userInfoStr) {
-    userInfo.value = JSON.parse(userInfoStr)
-  }
+  dataModel.initUserInfo()
+
   if (!code) {
     /* 返回首页 */
     window.location.href = '/'
@@ -263,8 +257,7 @@ const init = async () => {
 
 /* 登录/注册成功成功 */
 const loginSuccess = (data = {}) => {
-  userInfo.value = data
-  sessionStorage.setItem('userInfo', JSON.stringify(data))
+  dataModel.handleLogin(data)
   if (currentFile.value?.fileType === 0) {
     hanldeFileTypeIs0()
   }

@@ -32,6 +32,7 @@
     </div>
     <div class="layout-h layout-h-center" v-if="userInfo.id">
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;"  @click="openEditFileDialog('add')">新增表格</span>
+      <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline; " @click="handleUpload">导入表格</span>
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline; " @click="shareUrl">分享链接</span>
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;"  @click="copyCode" v-if="currentFile.fileType === 2">开放码</span>
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;"  @click="copyCode" v-if="currentFile.fileType === 0">共享码</span>
@@ -60,6 +61,7 @@
     :fileInfo="editFileType === 'edit' ? currentFile : {}"
     />
   <User v-model="userVisible" v-if="userVisible" :type="userType" @loginSuccess="loginSuccess"  />
+  <Upload ref="uploadRef" :userId="userInfo.id" @uploadSuccess="handleSuccess('upload')" />
 </template>
 
 <script setup lang="ts">
@@ -71,15 +73,21 @@ import { useRoute } from 'vue-router'
 import luckySheet from '@/components/LuckySheet/index.vue'
 import EddFileDialog from '@/components/EddFileDialog/index.vue'
 import User from '@/components/User/index.vue'
+import Upload from '@/components/Upload/index.vue'
 
 import { getFileList, deleteExcel } from '@/api/index'
 import { copyText } from '@/utils/index'
+import Helper from '@/utils/helper'
 
+const dataModel = new Helper()
 const route = useRoute()
+
 const luckySheetRef = ref(null)
+const uploadRef = ref(null)
+
 const userVisible = ref(false)
 const userType = ref('login')
-const userInfo = ref({})
+const userInfo = dataModel.userInfo
 
 const editFileType = ref('add')
 const editFileVisible = ref(false)
@@ -134,9 +142,7 @@ const handleSuccess = (type = 'edit') => {
 
 /* 登录成功 */
 const loginSuccess = (data = {}) => {
-  userInfo.value = data
-  sessionStorage.setItem('userInfo', JSON.stringify(data))
-  handleSuccess('loginScuess')
+  dataModel.handleLogin(data)
 }
 
 /* 删除 */
@@ -158,20 +164,16 @@ const logout = () => {
     cancelButtonText: '取消',
     confirmButtonText: '退出',
   }).then(() => {
-    ElMessage.success('退出登录')
-    userInfo.value = {}
-    sessionStorage.removeItem('userInfo')
     sessionStorage.removeItem('currentFileCode')
-    window.location.reload()
+    dataModel.handleLogout()
   })
 }
 
 /* 分享链接 */
 const shareUrl = () => {
-  const origin = window.location.origin
-  const url = `${origin}/excelTbale?code=${currentFile.value.code}&fileType=${currentFile.value.fileType}`
-  copyText(url, '链接已经复制到剪贴板')
+  dataModel.shareUrl(currentFile.value.code, currentFile.value.fileType)
 }
+
 /* 复制码 */
 const copyCode = () => {
   const tcode = currentFile.value.fileType === 2 ? currentFile.value.openCode : currentFile.value.shareCode
@@ -190,13 +192,14 @@ const handleSave = () => {
   ElMessage.success('文件保存成功')
 }
 
+/* 导入数据 */
+const handleUpload = () => {
+ uploadRef.value?.uploadBtnClick()
+}
+
 onMounted(() => {
   const { fileCode } = route.query
-  /* 获取用户信息 */
-  const userInfoStr = sessionStorage.getItem('userInfo')
-  if (userInfoStr) {
-    userInfo.value = JSON.parse(userInfoStr)
-  }
+  dataModel.initUserInfo()
   if (userInfo.value.id) {
     queryFileList(() => {
       const scode = fileCode || sessionStorage.getItem('currentFileCode') ||  ''
@@ -205,8 +208,6 @@ onMounted(() => {
     })
   }
 })
-
-
 </script>
 
 <style scoped lang="scss">

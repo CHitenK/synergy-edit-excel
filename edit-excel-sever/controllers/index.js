@@ -1,6 +1,7 @@
 const dbHelper = require("../mongodb/index.js");
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
+const pako = require("pako");
 
 const { handleHttpSuccess, handleHttpFail } = require("./config.js");
 const dayjs = require("dayjs");
@@ -12,8 +13,79 @@ function randomNum(num = 2) {
   return n1.substring(0, num);
 }
 
+/* 处理要新增的 excel 数据 */
+async function handleAddExcel(opition, content, next) {
+  // parms
+  const time = Date.now();
+  const code = `${dayjs(time).format("HHmmssMMDD")}${randomNum(6)}`;
+  const configData = {
+    id: uuidv4(),
+    /* 创建时间 */
+    creatTime: time,
+    /* 所属文件code */
+    code,
+    /* 所属用户ID */
+    hostUserId: opition.userId,
+    /* 名称 */
+    name: opition.name,
+    /* 更新时间 */
+    updateTime: time,
+    /* 是否使用 */
+    status: 1, // 1，是， 0 否
+    /* 配置内容 */
+    configList: opition.configList,
+  };
+  const cellData = {
+    id: uuidv4(),
+    /* 创建时间 */
+    creatTime: time,
+    /* 文件名 */
+    name: opition.name,
+    /* 所属文件code */
+    code,
+    /* 所属用户ID */
+    hostUserId: opition.userId,
+    /* 更新时间 */
+    updateTime: time,
+    /* 是否使用 */
+    status: 1, // 1，是， 0 否
+    /* 文件类型 私有/ 共享 / 开放  可修改 */
+    fileType: opition.fileType, // 1，私有， 0 共享 ，2 开放
+    /* 共享者Id */
+    sharerList: [],
+    /* 有编辑权限的用户ID  共享文件具有 */
+    canEditUserIds: [],
+    /* 开放码 */
+    openCode: opition.openCode ?? "",
+    /* 开放码过期时间 */
+    openCodeExpireTime: opition.openCodeExpireTime ?? null,
+    /* 共享码 */
+    shareCode: opition.shareCode ?? "",
+    /* 配置内容 */
+    cellData: opition?.cellDataList ?? [],
+  };
+  /* 开始事务， 需保证数据被两个表插入 */
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    dbHelper.cofigSchema.create([configData], { session });
+    dbHelper.dataSchema.create([cellData], { session });
+    /* 提交事务 */
+    await session.commitTransaction();
+    session.endSession();
+    content.response.body = handleHttpSuccess({ code, name: opition.name });
+  } catch (error) {
+    console.log(error);
+    // 回滚事务
+    await session.abortTransaction();
+    session.endSession();
+    content.response.body = handleHttpFail();
+    return false;
+  }
+}
+
 /* 默认加载的表格数据 */
-const getExcelDefaultData = (text = '开始编辑数据') => {
+const getExcelDefaultData = (text = "开始编辑数据") => {
   const sheetData = [
     {
       name: "Cell",
@@ -28,9 +100,9 @@ const getExcelDefaultData = (text = '开始编辑数据') => {
         },
       ],
     },
-  ]
-  return sheetData; 
-}
+  ];
+  return sheetData;
+};
 /* 通过Code 查询 config，cellData数据表是否存在code对应数据 */
 async function findExcelDataByCode(findOpt = {}) {
   const res1 = await dbHelper.cofigSchema.findOne(findOpt);
@@ -41,87 +113,63 @@ async function findExcelDataByCode(findOpt = {}) {
 /* 新建表格 */
 async function addExcel(content, next) {
   const params = content.request.body;
-  const time = Date.now();
+  await handleAddExcel({ ...params, configList, cellDataList }, content, next);
+}
 
-  const code = `${dayjs(time).format("HHmmssMMDD")}${randomNum(6)}`;
-
-  /* 默认配置 */
-  const configData = {
-    id: uuidv4(),
-    /* 创建时间 */
-    creatTime: time,
-    /* 所属文件code */
-    code,
-    /* 所属用户ID */
-    hostUserId: params.userId,
-    /* 名称 */
-    name: params.name,
-    /* 更新时间 */
-    updateTime: time,
-    /* 是否使用 */
-    status: 1, // 1，是， 0 否
-    /* 配置内容 */
-    configList: [
-      {
-        name: "sheet1",
-        index: "sheet_01",
-        order: 0,
-        status: 1,
-        row: 60, //行数
-        column: 30, //列数
-        defaultRowHeight: 26, //自定义行高
-        defaultColWidth: 100, //自定义列宽
-      },
-    ],
-  };
-  /* 默认空数据 */
-  const cellData = {
-    id: uuidv4(),
-    /* 创建时间 */
-    creatTime: time,
-    /* 文件名 */
-    name: params.name,
-    /* 所属文件code */
-    code,
-    /* 所属用户ID */
-    hostUserId: params.userId,
-    /* 更新时间 */
-    updateTime: time,
-    /* 是否使用 */
-    status: 1, // 1，是， 0 否
-    /* 文件类型 私有/ 共享 / 开放  可修改 */
-    fileType: params.fileType, // 1，私有， 0 共享 ，2 开放
-    /* 共享者Id */
-    sharerList: [],
-    /* 有编辑权限的用户ID  共享文件具有 */
-    canEditUserIds: [],
-    /* 开放码 */
-    openCode: params.openCode,
-    /* 开放码过期时间 */
-    openCodeExpireTime: params.openCodeExpireTime,
-    /* 共享码 */
-    shareCode: params.shareCode,
-    /* 配置内容 */
-    cellData: [],
-  };
-
-  /* 开始事务， 需保证数据被两个表插入 */
-  const session = await mongoose.startSession();
-  session.startTransaction();
+/* 导入表格表格 */
+async function importExcel(content, next) {
   try {
-    dbHelper.cofigSchema.create([configData], { session });
-    dbHelper.dataSchema.create([cellData], { session });
-    /* 提交事务 */
-    await session.commitTransaction();
-    session.endSession();
-    content.response.body = handleHttpSuccess({ code, name: params.name });
+    // 获取请求体中的二进制数据
+    const buffer = await new Promise((resolve, reject) => {
+      const chunks = [];
+      content.req.on("data", (chunk) => {
+        chunks.push(chunk);
+      });
+      content.req.on("end", () => {
+        resolve(Buffer.concat(chunks));
+      });
+      content.req.on("error", (err) => {
+        reject(err);
+      });
+    });
+
+    // 使用 pako 解压缩数据
+    const decompressedData = pako.ungzip(buffer, { to: "string" });
+
+    // 将解压缩后的 JSON 字符串转换为对象
+    const data = JSON.parse(decompressedData);
+
+    const { info = {}, sheets = [], userId } = data;
+
+    /* 判断是否已经上传过 */
+    const res = await findExcelDataByCode({
+      name: info.name,
+      hostUserId: userId,
+    });
+    if (res) {
+      content.response.body = handleHttpFail("文件已导入过");
+      return false;
+    }
+    const configList = [];
+    const cellDataList = [];
+
+    sheets?.forEach((sheet, index) => {
+      const { celldata, name } = sheet;
+      cellDataList[index] = { name, data: celldata };
+      delete sheet.celldata;
+      configList[index] = sheet;
+    });
+
+    const params = {
+      name: info.name,
+      userId,
+      fileType: 1, // 导入的文件默认为私有文件
+      configList,
+      cellDataList,
+    };
+    await handleAddExcel(params, content, next);
   } catch (error) {
-    console.log(error);
-    // 回滚事务
-    await session.abortTransaction();
-    session.endSession();
-    content.response.body = handleHttpFail();
-    return false;
+    content.response.body = handleHttpFail("导入数据出错了");
   }
 }
 
@@ -279,33 +327,34 @@ async function getExcelCellData(content, next) {
   content.response.body = handleHttpSuccess(data);
 }
 
-/* 初始化biaoge  */
+/* 初始化表格  */
 async function initSheetData(content, next) {
   const { gridKey } = content.request.body;
   if (!gridKey) {
     const sheetData = getExcelDefaultData();
     const data = JSON.stringify(sheetData);
-    content.response.body = data
+    content.response.body = data;
   } else {
     const excelCofig = await dbHelper.cofigSchema.findOne({ code: gridKey });
     const excelData = await dbHelper.dataSchema.findOne({ code: gridKey });
     /* code 对应的数据不存在时 */
     if (excelCofig && excelData) {
       const sheetData = excelCofig?.configList?.map((item, index) => {
-        const t = excelData.cellData?.find(cell => {
-          return cell.name === item.name
-        }) ?? {}
+        const t =
+          excelData.cellData?.find((cell) => {
+            return cell.name === item.name;
+          }) ?? {};
         return {
           ...item,
-          celldata: t?.data ?? []
-        }
-      })
+          celldata: t?.data ?? [],
+        };
+      });
       const data = JSON.stringify(sheetData);
       content.response.body = data;
     } else {
       const sheetData = getExcelDefaultData(`文件${gridKey}对应数据不存在`);
       const data = JSON.stringify(sheetData);
-      content.response.body = data
+      content.response.body = data;
     }
   }
 }
@@ -433,8 +482,7 @@ async function addSharer(content, next) {
 }
 
 /* ws 更新配置信息 */
- async function upDateExcelBySocket(code, configList, cellData ) {
- 
+async function upDateExcelBySocket(code, configList, cellData) {
   if (code && Array.isArray(configList)) {
     await dbHelper.cofigSchema.updateOne({ code }, { $set: { configList } });
   }
@@ -459,5 +507,6 @@ module.exports = {
   checkOpenCode,
   isSharer,
   addSharer,
-  upDateExcelBySocket
+  upDateExcelBySocket,
+  importExcel
 };

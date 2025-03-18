@@ -120,4 +120,15 @@ export const addSharer = (params = {}) => {
   }) 
 }
 
+/* 导入数据 */
+export const importExcel = (params = {}) => { 
+  return request({
+    url: '/api/excel/importExcel',
+    headers: {
+      "Content-Type": "application/octet-stream"
+    },
+    method: "post",
+    data: params
+  }) 
+}
 

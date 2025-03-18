@@ -15,7 +15,8 @@ const {
   getExcelInfoByCode,
   checkOpenCode,
   isSharer,
-  addSharer
+  addSharer,
+  importExcel
 } = require("../controllers/index.js");
 
 const router = new Router();
@@ -37,5 +38,6 @@ router.get("/api/excel/baseInfo", getExcelInfoByCode);
 router.post("/api/excel/checkOpenCode", checkOpenCode)
 router.post("/api/excel/isSharer", isSharer)
 router.post("/api/excel/addSharer", addSharer)
+router.post("/api/excel/importExcel", importExcel)
 
 module.exports = router;

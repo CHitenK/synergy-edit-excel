@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineExpose, nextTick, onUnmounted, watch } from 'vue'
+import { ref, onMounted, defineExpose, nextTick, onUnmounted } from 'vue'
 // import LuckyExcel from 'luckyexcel'
 
 import { commitExcelConfig, commitExcelCelldata, getEacelBaseInfo } from '@/api/index'
@@ -124,7 +124,6 @@ const commitUpdateTyle2 = () => {
     configList,
     cellData
   }
-  console.log(d)
   let msg = luckysheetPakoZipData(d)
   luckysheetSocket.send(msg)
   // console.log('updated', data)

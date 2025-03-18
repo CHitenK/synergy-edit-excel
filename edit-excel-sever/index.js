@@ -7,6 +7,7 @@ const appRoters = require('./routers/index.js')
 const app = new Koa();
 app.use(bodyParser())
 app.use(appRoters.routes())
+app.use(appRoters.allowedMethods())
 
 setTimeout(() => {
   socketHelper.initWss(app)
