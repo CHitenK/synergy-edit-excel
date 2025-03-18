@@ -14,7 +14,7 @@
     </div>
     
     <div class="layout-h layout-h-center"  >
-      <span class="gutter-h cursor" style="font-size: 12px; color: var(--el-color-info);" v-if="currentFile.fileType === 2 && showWatermark">开放码校验</span>
+      <span class="gutter-h cursor" style="font-size: 12px; color: var(--el-color-info);" v-if="currentFile.fileType === 2 && showWatermark" @click="codeVisible = true">开放码校验</span>
       <template v-if="!(!userInfo.id && currentFile.fileType === 0)">
         <span class="gutter-h cursor" style="font-size: 12px; color: var(--el-color-info);" @click="handleDownLoad" >导出表格</span>
         <span class="gutter-h cursor" style="font-size: 12px; color: var(--el-color-info);" @click="shareUrl">分享链接</span>
@@ -114,7 +114,7 @@ const commitCode = (value = '') => {
       ElMessage.error('请输入6位数字开放码， 不含空格')
       return false
     }
-    checkOpenCode({ openCode: value, code: currentFile.value.code }).then(res => {
+    checkOpenCode({ openCode: value, code: currentFile.value.code, userId: userInfo.value?.id }).then(res => {
       /* 校验通过 */
       if (res.data === 0)  {
         ElMessage.success('开放码校验成功')
@@ -124,6 +124,16 @@ const commitCode = (value = '') => {
         reloadLuckySheet()
         codeVisible.value = false
         return false
+      }
+      /* 拥有者 */
+      if (res.data === 3) {
+        /* 缓存 */
+        window.localStorage.setItem(`${currentFile.value.code}`, value)
+        ElMessage.success('您是文件的创建者， 即将返回系统首页')
+        setTimeout(() => {
+          window.location.href = `/index?fileCode=${ currentFile.value.code}`
+        }, 3000)
+        return fasle
       }
       /* 校验不通过 */
       const tip = res.data === 1 ? '当前开放码已失效' : '开放码错误'
@@ -167,10 +177,10 @@ const hanldeFileTypeIs0 = async () => {
     }
     /* 拥有者 */
     if (res.data === 2) {
-      ElMessage.error('您是文件的拥有者， 即将返回系统首页')
+      ElMessage.success('您是文件的创建者， 即将返回系统首页')
       setTimeout(() => {
         window.location.href = `/index?fileCode=${ currentFile.value.code}`
-      }, 2000)
+      }, 3000)
     }
   }
 }
@@ -190,11 +200,12 @@ const handleFileTypeIs1 = () => {
   }
 }
 /* 开放文件类型 */
-const handleFileTypeIs2 = async () => {
+const handleFileTypeIs2 = async (fileCode = '') => {
   /* 开放文件类型 */
   if (currentFile.value?.fileType === 2) {
     /* 获取缓存openCode */
-    const oldOpenCode = window.localStorage.getItem(`${currentFile.value.code}`)
+    // 演示表格Code
+    const oldOpenCode = fileCode === '2208380315965186' ? '392820' :  window.localStorage.getItem(`${currentFile.value.code}`)
     if (oldOpenCode) {
       /* 自动校验 */
       const res = await checkOpenCode({ openCode: oldOpenCode, code: currentFile.value.code, userId: userInfo.value?.id ?? null })
@@ -204,7 +215,7 @@ const handleFileTypeIs2 = async () => {
         return false
       }
       if (res.data === 3) {
-        ElMessage.error('您是文件的拥有者， 即将返回系统首页')
+        ElMessage.success('您是文件的创建者， 即将返回系统首页')
         setTimeout(() => {
           window.location.href = `/index?fileCode=${ currentFile.value.code}`
         }, 2000)
@@ -248,7 +259,7 @@ const init = async () => {
     /* 处理不同类型文件 */
     hanldeFileTypeIs0()
     handleFileTypeIs1()
-    handleFileTypeIs2()
+    handleFileTypeIs2(code)
   } catch (error) {
     console.log(error)
   }

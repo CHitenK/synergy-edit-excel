@@ -1,7 +1,7 @@
 
 /*
   pm2 配置文件
-  sehll 命令pm2 start ./ecosystem.config.cjs
+  sehll 命令 pm2 start ./ecosystem.config.cjs
 */
 module.exports = {
   apps: [

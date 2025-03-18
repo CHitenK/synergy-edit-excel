@@ -49,7 +49,7 @@ class Helper {
   /* 分享链接 */
   shareUrl(code = "", fileType = "") {
     const origin = window.location.origin;
-    const url = `${origin}/?code=${code}&fileType=${fileType}`;
+    const url = `${origin}/excel?code=${code}&fileType=${fileType}`;
     copyText(url, "链接已经复制到剪贴板");
   }
 }

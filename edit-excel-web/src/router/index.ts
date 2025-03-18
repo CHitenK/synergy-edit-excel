@@ -16,8 +16,8 @@ const router = createRouter({
       component: () => import('@/views/Home/index.vue')
     },
     {
-      path: '/excelTbale',
-      name: 'excelTbale',
+      path: '/excel',
+      name: 'excel',
       meta: {
         title: 'Excel协同编辑'
       },

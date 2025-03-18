@@ -37,10 +37,6 @@
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;"  @click="copyCode" v-if="currentFile.fileType === 2">开放码</span>
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;"  @click="copyCode" v-if="currentFile.fileType === 0">共享码</span>
       <span class="gutter-h cursor" style="font-size: 12px; text-decoration: underline;" @click="handleDownLoad">导出表格</span>
-      <!-- <el-icon color="#666" :size="16"  class="gutter-h cursor" title="新增表格"  @click="openEditFileDialog('add')"><DocumentAdd /></el-icon>
-      <el-icon color="#444" :size="16"  class="gutter-h cursor" title="复制链接" @click="shareUrl"><Link /></el-icon>
-      <el-icon color="#444" :size="16"  class="gutter-h cursor" title="获取开放码" @click="copyCode"><Key /></el-icon>
-      <el-icon color="#666" :size="16"  class="gutter-h cursor" title="导出表格" @click="handleDownLoad"><Download /></el-icon> -->
       <span style="font-size: 14px; color: var(--el-color-primary); ">{{ userInfo.name }}</span>
       &nbsp;
       [<span style="font-size: 12px; color: var(--el-color-error);" class="cursor" @click="logout">退出</span>]
@@ -67,7 +63,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import{ ElMessageBox, ElMessage }  from 'element-plus'
-import {  DocumentAdd, Share, Download, Delete, ArrowDown, Edit, Link, Key, DocumentChecked } from '@element-plus/icons-vue'
+import { Delete, ArrowDown, Edit, DocumentChecked } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 
 import luckySheet from '@/components/LuckySheet/index.vue'
