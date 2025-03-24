@@ -14,7 +14,7 @@
             class="simulate-password"
             ref="passwordRef"
             placeholder="请输入文件名"
-            :maxlength="20"
+            :maxlength="36"
             show-word-limit
             clearable
             v-model.trim="fileForm.name"

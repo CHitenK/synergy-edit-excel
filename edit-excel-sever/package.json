@@ -15,8 +15,6 @@
     "koa-router": "^13.0.1",
     "mongoose": "^8.8.2",
     "pako": "^2.1.0",
-    "sharedb": "^5.2.1",
-    "sharedb-mongo": "^5.0.0",
     "socket.io": "^4.8.1",
     "uuid": "^11.1.0",
     "ws": "^8.18.1"

@@ -25,6 +25,7 @@ class Helper {
     this.userInfo.value = user;
     localStorage.setItem("userInfo", JSON.stringify(user));
     this.refreshLoginTime(user.id);
+    window.location.reload();
   }
 
   /* 初始用户信息 */

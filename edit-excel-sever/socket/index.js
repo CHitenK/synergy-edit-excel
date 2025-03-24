@@ -100,7 +100,7 @@ class SocketHelper {
       });
     });
     this.wss.on("error", (error) => {
-      console.error("服务器错误:", error);
+      console.log("ws服务器错误:", error);
       this.socketRoom = {};
     });
   }

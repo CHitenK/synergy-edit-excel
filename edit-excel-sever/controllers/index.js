@@ -113,7 +113,8 @@ async function findExcelDataByCode(findOpt = {}) {
 /* 新建表格 */
 async function addExcel(content, next) {
   const params = content.request.body;
-  await handleAddExcel({ ...params, configList, cellDataList }, content, next);
+  const configList = getExcelDefaultData()
+  await handleAddExcel({ ...params, configList }, content, next);
 }
 
 /* 导入表格表格 */

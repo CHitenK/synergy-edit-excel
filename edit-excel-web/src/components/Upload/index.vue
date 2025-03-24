@@ -42,7 +42,9 @@ const loadExcel = (evt) => {
     ElMessage.error('请导入.xlsx文件, 不支持其他格式文件')
     return
   }
+
   LuckyExcel.transformExcelToLucky(files[0], async function (exportJson, luckysheetfile) {
+  
     if (exportJson.sheets == null || exportJson.sheets.length == 0) {
       ElMessage.error('导入出错了，稍后重试')
       return false
