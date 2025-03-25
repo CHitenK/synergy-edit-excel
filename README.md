@@ -4,7 +4,7 @@
 
 [Excel协同编辑系统](http://blog.sixk.top)
 
-[Excel协同编辑系统-demo]([http://sixk.top/excel-demo.html)
+[Excel协同编辑系统-demo]([http://sixk.top/excel-demo.html])
 
 系统示意图
 ![图片](http://120.46.210.201/sources/image/excel-edit.png)
